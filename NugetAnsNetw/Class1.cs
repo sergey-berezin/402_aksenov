@@ -17,7 +17,7 @@ namespace NugetAnsNetw
             modelPath = modelPath1;
             ct = ct1;
         }
-        public Task<string> Answering(string text, string question)
+        public Task<string> AnsweringAsync(string text, string question)
         {
             return Task.Factory.StartNew(() => {
                 try

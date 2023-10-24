@@ -37,7 +37,6 @@ class Program
 
             var task = taskAns.Answering(text, question).ContinueWith(task => { Console.WriteLine("Answer on question - '" + question + "' : " + task.Result); }); ;
             // get ans from model
-            await task;
 
             tasks.Add(task);
 
