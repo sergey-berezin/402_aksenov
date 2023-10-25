@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "ConsoleApp1": {
+      "commandName": "Project",
+      "commandLineArgs": "D:/С#/7sem_lab1/Solution1/ConsoleApp1/hobbit.txt"
+    }
+  }
+}
