@@ -18,7 +18,7 @@ class Program
         var cts = new CancellationTokenSource();
         // make cancel token, model url and path
 
-        var taskAns = new AnsNetwComp(modelUrl, modelPath, cts.Token);
+        var taskAns = new AnsNetwComp(cts.Token);
         // constructor 
         await taskAns.MakeSession();
         // wait when session was set
@@ -35,7 +35,7 @@ class Program
             }
                 // no question -> out
 
-            var task = taskAns.Answering(text, question).ContinueWith(task => { Console.WriteLine("Answer on question - '" + question + "' : " + task.Result); }); ;
+            var task = taskAns.AnsweringAsync(text, question).ContinueWith(task => { Console.WriteLine("Answer on question - '" + question + "' : " + task.Result); }); ;
             // get ans from model
 
             tasks.Add(task);
