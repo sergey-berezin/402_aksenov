@@ -27,7 +27,7 @@ namespace WpfApp1
         AnsNetwComp ansModel;
         CancellationTokenSource cts;
         string text;
-        CancellationTokenSource ansCts = new CancellationTokenSource();
+        CancellationTokenSource ansCts;
 
         public MainWindow()
         {
@@ -73,7 +73,6 @@ namespace WpfApp1
         private async void sendButton_Click(object sender, RoutedEventArgs e)
         {
             cancelButton.IsEnabled = true;
-            sendButton.IsEnabled = false;
             if (text == null)
             {
                 chatTextBox.Text += $"You need to upload the text\n";
@@ -104,12 +103,12 @@ namespace WpfApp1
                 MessageBox.Show($"err: {ex.Message}");
             }
             cancelButton.IsEnabled = false;
-            sendButton.IsEnabled = true;
         }
 
         private void cancelButton_Click(object sender, RoutedEventArgs e)
         {
             ansCts.Cancel();
+            ansCts.Dispose();
         }
     }
 }
