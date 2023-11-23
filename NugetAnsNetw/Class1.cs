@@ -8,16 +8,14 @@ namespace NugetAnsNetw
     public class AnsNetwComp
     {
         private static InferenceSession session;
-        private static string modelUrl;
-        private static string modelPath;
+        private static string modelUrl = "https://storage.yandexcloud.net/dotnet4/bert-large-uncased-whole-word-masking-finetuned-squad.onnx";
+        private static string modelPath = "bert-large-uncased-whole-word-masking-finetuned-squad.onnx";
         CancellationToken ct;
-        public AnsNetwComp(string modelUrl1, string modelPath1, CancellationToken ct1)
+        public AnsNetwComp(CancellationToken ct1)
         {
-            modelUrl = modelUrl1;
-            modelPath = modelPath1;
             ct = ct1;
         }
-        public Task<string> AnsweringAsync(string text, string question)
+        public Task<string> AnsweringAsync(string text, string question, CancellationToken ct)
         {
             return Task.Factory.StartNew(() => {
                 try
