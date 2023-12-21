@@ -28,6 +28,7 @@ namespace WpfApp1
     {
         public string Question { get; set; }
         public string Answer { get; set; }
+        public string FileText { get; set; }
     }
     public partial class MainWindow : Window
     {
@@ -37,6 +38,7 @@ namespace WpfApp1
         CancellationTokenSource ansCts;
         List<DialogEntry> dialogHistory;
         string historyFilePath = "dialog_history.json";
+        string fileName;
 
         public MainWindow()
         {
@@ -69,7 +71,7 @@ namespace WpfApp1
 
             if (openFileDialog.ShowDialog() == true)
             {
-                string fileName = openFileDialog.FileName;
+                fileName = openFileDialog.FileName;
                 text = File.ReadAllText(fileName);
 
                 chatTextBox.Text += "Text is loaded.\n";
@@ -96,7 +98,7 @@ namespace WpfApp1
 
             try
             {
-                var previousEntry = dialogHistory.FirstOrDefault(entry => entry.Question == quest);
+                var previousEntry = dialogHistory.FirstOrDefault(entry => entry.Question == quest && entry.FileText == fileName);
                 if (previousEntry != null)
                 {
                     chatTextBox.Text += $"Question: {quest}\n";
@@ -108,7 +110,7 @@ namespace WpfApp1
                     chatTextBox.Text += $"Question: {quest}\n";
                     chatTextBox.Text += $"Answer: {ans}\n";
 
-                    dialogHistory.Add(new DialogEntry { Question = quest, Answer = ans });
+                    dialogHistory.Add(new DialogEntry { Question = quest, Answer = ans, FileText = fileName });
                     SaveDialogHistory();
                 }
             }
