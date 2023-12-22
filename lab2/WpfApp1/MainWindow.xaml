@@ -16,5 +16,7 @@
         <Button x:Name="loadButton" Content="Load" HorizontalAlignment="Left" VerticalAlignment="Top" Width="80" Height="30" Margin="138,18,0,0" Click="loadButton_Click"/>
         <TextBlock Text="Cancel" FontSize="16" HorizontalAlignment="Left" Margin="10,104,0,306"/>
         <Button x:Name="cancelButton" Content="Cancel" HorizontalAlignment="Left" VerticalAlignment="Top" Width="80" Height="30" Margin="138,101,0,0" Click="cancelButton_Click"/>
+        <TextBlock Text="Clear dialog" FontSize="16" HorizontalAlignment="Left" Margin="454,144,0,266"/>
+        <Button x:Name="clearHistory" Content="Clear" HorizontalAlignment="Left" VerticalAlignment="Top" Width="80" Height="30" Margin="566,141,0,0" Click="clearHistoryButton_Click"/>
     </Grid>
 </Window>

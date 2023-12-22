@@ -15,6 +15,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Microsoft.Win32;
+using Newtonsoft.Json;
 using NugetAnsNetw;
 
 namespace WpfApp1
@@ -22,12 +23,22 @@ namespace WpfApp1
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
+
+    public class DialogEntry
+    {
+        public string Question { get; set; }
+        public string Answer { get; set; }
+        public string FileText { get; set; }
+    }
     public partial class MainWindow : Window
     {
         AnsNetwComp ansModel;
         CancellationTokenSource cts;
         string text;
         CancellationTokenSource ansCts;
+        List<DialogEntry> dialogHistory;
+        string historyFilePath = "dialog_history.json";
+        string fileName;
 
         public MainWindow()
         {
@@ -36,6 +47,7 @@ namespace WpfApp1
             ansModel = new AnsNetwComp(cts.Token);
             ModelLoadAsync();
             text = null;
+            LoadDialogHistory();
         }
         private async void ModelLoadAsync()
         {
@@ -59,7 +71,7 @@ namespace WpfApp1
 
             if (openFileDialog.ShowDialog() == true)
             {
-                string fileName = openFileDialog.FileName;
+                fileName = openFileDialog.FileName;
                 text = File.ReadAllText(fileName);
 
                 chatTextBox.Text += "Text is loaded.\n";
@@ -86,10 +98,21 @@ namespace WpfApp1
 
             try
             {
-                var ans = await ansModel.AnsweringAsync(text, quest, ansCts.Token);
+                var previousEntry = dialogHistory.FirstOrDefault(entry => entry.Question == quest && entry.FileText == fileName);
+                if (previousEntry != null)
+                {
+                    chatTextBox.Text += $"Question: {quest}\n";
+                    chatTextBox.Text += $"Answer (from history): {previousEntry.Answer}\n";
+                }
+                else
+                {
+                    var ans = await ansModel.AnsweringAsync(text, quest, ansCts.Token);
+                    chatTextBox.Text += $"Question: {quest}\n";
+                    chatTextBox.Text += $"Answer: {ans}\n";
 
-                chatTextBox.Text += $"Question: {quest}\n";
-                chatTextBox.Text += $"Answer: {ans}\n";
+                    dialogHistory.Add(new DialogEntry { Question = quest, Answer = ans, FileText = fileName });
+                    SaveDialogHistory();
+                }
             }
             catch (Exception ex)
             {
@@ -109,6 +132,39 @@ namespace WpfApp1
         {
             ansCts.Cancel();
             ansCts.Dispose();
+        }
+        private void LoadDialogHistory()
+        {
+            if (File.Exists(historyFilePath))
+            {
+                string json = File.ReadAllText(historyFilePath);
+                dialogHistory = JsonConvert.DeserializeObject<List<DialogEntry>>(json);
+                DisplayDialogHistory();
+            }
+            else
+            {
+                dialogHistory = new List<DialogEntry>();
+            }
+        }
+        private void DisplayDialogHistory()
+        {
+            foreach (var entry in dialogHistory)
+            {
+                chatTextBox.Text += $"Question: {entry.Question}\n";
+                chatTextBox.Text += $"Answer: {entry.Answer}\n";
+                chatTextBox.Text += "-------------------------------------\n";
+            }
+        }
+        private void SaveDialogHistory()
+        {
+            string json = JsonConvert.SerializeObject(dialogHistory, Formatting.Indented);
+            File.WriteAllText(historyFilePath, json);
+        }
+        private void clearHistoryButton_Click(object sender, RoutedEventArgs e)
+        {
+            dialogHistory.Clear();
+            SaveDialogHistory();
+            chatTextBox.Text = "Dialog history is cleared.\n";
         }
     }
 }
